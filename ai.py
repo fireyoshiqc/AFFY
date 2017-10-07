@@ -84,18 +84,17 @@ def deserialize_map(serialized_map):
 
             # Add info into gameInfo
             # Get rid off empty resources
-            if Point(x, y) in gameInfo.Resources and content != 1:
+            if Point(x, y) in gameInfo.Resources and content != TileContent.Resource:
                 gameInfo.Resources.remove(Point(x, y))
-            # Empty 0, Resource 1, House 2, Player 3, Wall 4, Lava 5, Shop 6
-            if content == 1:
+            if content == TileContent.Resource:
                 gameInfo.addResource(Point(x, y))
-            elif content == 4:
+            elif content == TileContent.Wall:
                 gameInfo.addWall(Point(x, y))
-            elif content == 5:
+            elif content == TileContent.Lava:
                 gameInfo.addLava(Point(x, y))
-            elif content == 6:
+            elif content == TileContent.Shop:
                 gameInfo.addShop(Point(x, y))
-            elif content == 0:
+            elif content == TileContent.Empty:
                 gameInfo.addEmpty(Point(x, y));
 
 
