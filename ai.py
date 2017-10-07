@@ -74,7 +74,7 @@ def deserialize_map(serialized_map):
 
             # Add info into gameInfo
             # Get rid off empty resources
-            if Point(x, y) in gameInfo.Resources & content != 1:
+            if Point(x, y) in gameInfo.Resources and content != 1:
                 gameInfo.Resources.remove(Point(x, y))
             # Empty 0, Resource 1, House 2, Player 3, Wall 4, Lava 5, Shop 6
             if content == 1:
@@ -88,6 +88,17 @@ def deserialize_map(serialized_map):
 
 
     return deserialized_map
+
+def move_to(gamemap, player, target):
+    path = a_star(gamemap, player, target)
+    if path:
+        next_tile = path.pop().tile
+        print next_tile.X 
+        print next_tile.Y
+        return create_move_action(Point(next_tile.X, next_tile.Y))
+    else:
+        return create_move_action(Point(player.Position.X, player.Position.Y))
+
 
 def bot():
     """
@@ -136,14 +147,7 @@ def bot():
 
     # return decision
     display_map(deserialized_map, player)
-    path = a_star(deserialized_map, player, Point(25,25))
-    if path:
-        next_tile = path.pop().tile
-        print next_tile.X 
-        print next_tile.Y
-        return create_move_action(Point(next_tile.X, next_tile.Y))
-    else:
-        return create_move_action(Point(player.Position.X, player.Position.Y))
+    return move_to(deserialized_map, player, Point(30,30))
     
 
 @app.route("/", methods=["POST"])
