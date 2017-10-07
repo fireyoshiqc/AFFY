@@ -85,15 +85,13 @@ class GameInfo(object):
 
     def clearLava(self):
         self.Lava = list()
-
-    def clearPlayers(self):
         self.Players = dict()
 
     def addLava(self, point):
         self.Lava.append(point)
 
-    def addPlayer(self, position, healthRatio):
-        self.Players[position] = healthRatio
+    def addPlayer(self, position, playerInfo):
+        self.Players[position] = playerInfo
 
     def nearestResource(self, position):
         dist = 40
@@ -104,9 +102,9 @@ class GameInfo(object):
 
     def nearestPlayer(self, position):
         dist = 40
-        for (point, healthRatio) in self.Players:
+        for (point, playerInfo) in self.Players:
             if position.MahanttanDistance(point) < dist:
-                self.nearestPlayer = (point, healthRatio)
+                self.nearestPlayer = (point, playerInfo)
 
         return self.nearestPlayer
 
@@ -145,10 +143,13 @@ class Player(object):
 
 class PlayerInfo(object):
 
-    def __init__(self, health, maxHealth, position):
+    def __init__(self, health, maxHealth, position, attackPower, defense, carriedRessources):
         self.Health = health
         self.MaxHealth = maxHealth
         self.Position = position
+        self.Defense = defense
+        self.AttackPower = attackPower
+        self.CarriedRessources = carriedRessources
 
 class ActionContent(object):
 

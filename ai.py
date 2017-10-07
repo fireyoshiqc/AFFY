@@ -109,6 +109,9 @@ def bot():
     serialized_map = map_json["CustomSerializedMap"]
     deserialized_map = deserialize_map(serialized_map)
 
+    # Clear players et lava
+
+
     # otherPlayers = []
 
     # Get info for players
@@ -117,7 +120,9 @@ def bot():
             player_info = player_dict[player_name]
             if player_info == 'notAPlayer': continue
             p_pos = player_info["Position"]
-            gameInfo.addPlayer(Point(p_pos["X"], p_pos["Y"]), float(player_info["Health"])/float(player_info["MaxHealth"]))
+            gameInfo.addPlayer(Point(p_pos["X"], p_pos["Y"]), PlayerInfo(player_info["Health"], player_info["MaxHealth"],
+                                                                         Point(p_pos["X"], p_pos["Y"]), player_info["AttackPower"],
+                                                                         player_info["Defence"], player_info["Resources"]))
             # player_info = PlayerInfo(player_info["Health"],
             #                          player_info["MaxHealth"],
             #                          Point(p_pos["X"], p_pos["Y"]))
