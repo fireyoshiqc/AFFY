@@ -5,6 +5,8 @@ import numpy
 
 app = Flask(__name__)
 
+gameInfo = GameInfo();
+
 def create_action(action_type, target):
     actionContent = ActionContent(action_type, target.__dict__)
     return json.dumps(actionContent.__dict__)
@@ -27,6 +29,9 @@ def create_heal_action():
 def create_purchase_action(item):
     return create_action("PurchaseAction", item)
 
+def parcours_map(serialized_map):
+
+
 def deserialize_map(serialized_map):
     """
     Fonction utilitaire pour comprendre la map
@@ -45,6 +50,9 @@ def deserialize_map(serialized_map):
             x = int(infos[1])
             y = int(infos[2][:end_index])
             deserialized_map[i][j] = Tile(content, x, y)
+
+            # Add info into gameInfo
+
 
     return deserialized_map
 
@@ -71,17 +79,18 @@ def bot():
     serialized_map = map_json["CustomSerializedMap"]
     deserialized_map = deserialize_map(serialized_map)
 
-    otherPlayers = []
+    # otherPlayers = []
 
-    for player_dict in map_json["OtherPlayers"]:
-        for player_name in player_dict.keys():
-            player_info = player_dict[player_name]
-            p_pos = player_info["Position"]
-            player_info = PlayerInfo(player_info["Health"],
-                                     player_info["MaxHealth"],
-                                     Point(p_pos["X"], p_pos["Y"]))
-
-            otherPlayers.append({player_name: player_info })
+    # for player_dict in map_json["OtherPlayers"]:
+    #     for player_name in player_dict.keys():
+    #         player_info = player_dict[player_name]
+    #         p_pos = player_info["Position"]
+    #         gameInfo.addPlayer(p_pos, float(player_info["Health"])/float(player_info["MaxHealth"]))
+    #         # player_info = PlayerInfo(player_info["Health"],
+    #         #                          player_info["MaxHealth"],
+    #         #                          Point(p_pos["X"], p_pos["Y"]))
+    #
+    #         # otherPlayers.append({player_name: player_info })
 
     # return decision
     return create_move_action(Point(0,1))

@@ -34,19 +34,56 @@ class Point(object):
         return "{{{0}, {1}}}".format(self.X, self.Y)
 
     # Distance between two Points
-    def Distance(self, p1, p2):
-        delta_x = p1.X - p2.X
-        delta_y = p1.Y - p2.Y
-        return math.sqrt(math.pow(delta_x, 2) + math.pow(delta_y, 2))
+    def Distance(self, p2):
+        delta_x = abs(self.X - p2.X)
+        delta_y = abs(self.Y - p2.Y)
+        return delta_x + delta_y
 
 
 class GameInfo(object):
 
-    def __init__(self, json_dict):
-        self.__dict__ = json_dict
-        self.HouseLocation = Point(json_dict["HouseLocation"])
-        self.Map = None
+    def __init__(self):
+        self.HouseLocation = None
+        self.checkPoints = list()
         self.Players = dict()
+        self.Shop = list()
+        self.Resources = list()
+        self.Lava = list()
+
+    def addResource(self, point):
+        self.Resources.append(point)
+
+    def addShop(self, point):
+        self.Shop.append(point)
+
+    def clearLava(self):
+        self.Lava = list()
+
+    def clearPlayers(self):
+        self.Players = dict()
+
+    def addLava(self, point):
+        self.Lava.append(point)
+
+    def addPlayer(self, position, healthRatio):
+        self.Players[position] = healthRatio
+
+    def nearestResource(self, position):
+        dist = 40
+        nearest = None
+        for point in self.Resources:
+            if position.Distance(point) < dist:
+                nearest = point
+        return nearest
+
+    def nearestPlayer(self, position):
+        dist = 40
+        nearest = None
+        for (point, healthRatio) in self.Players:
+            if position.Distance(point) < dist:
+                nearest = (point, healthRatio)
+
+        return nearest
 
 
 class Tile(object):
