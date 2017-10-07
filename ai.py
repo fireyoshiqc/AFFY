@@ -56,6 +56,10 @@ def create_heal_action():
 def create_purchase_action(item):
     return create_action("PurchaseAction", item)
 
+def create_upgrade_action(upgrade):
+    return create_action("UpgradeAction", upgrade)
+
+
 
 def deserialize_map(serialized_map):
     """
@@ -180,15 +184,10 @@ def decideMove(deserialized_map):
                            y = j
                            break
 
-
            return move_to(deserialized_map, player, Point(x, y))
 
     else:
         return move_to(deserialized_map, gameInfo.HouseLocation)
-
-
-
-
 
 
 @app.route("/", methods=["POST"])
