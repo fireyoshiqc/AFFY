@@ -64,7 +64,7 @@ def bot():
     y = pos["Y"]
     house = p["HouseLocation"]
     player = Player(p["Health"], p["MaxHealth"], Point(x,y),
-                    Point(house["X"], house["Y"]),
+                    Point(house["X"], house["Y"]), 0,
                     p["CarriedResources"], p["CarryingCapacity"])
 
     # Map
