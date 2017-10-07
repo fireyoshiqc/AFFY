@@ -14,18 +14,6 @@ class Node:
     
 
 def enfants(current, grid):
-    liens = []
-    if current.relX == 0:
-        liens = [grid[d[0]][d[1]] for d in [(current.relX,current.relY-1),(current.relX,current.relY+1),(current.relX+1,current.relY)]]
-    if current.relX == 19:
-        liens = [grid[d[0]][d[1]] for d in [(current.relX-1, current.relY),(current.relX,current.relY-1),(current.relX,current.relY+1)]]
-    if current.relY == 0:
-        liens = [grid[d[0]][d[1]] for d in [(current.relX-1, current.relY),(current.relX,current.relY+1),(current.relX+1,current.relY)]]
-    if current.relY == 19:
-        liens = [grid[d[0]][d[1]] for d in [(current.relX-1, current.relY),(current.relX,current.relY-1),(current.relX+1,current.relY)]]
-    else:
-        liens = [grid[d[0]][d[1]] for d in [(current.relX-1, current.relY),(current.relX,current.relY-1),(current.relX,current.relY+1),(current.relX+1,current.relY)]]
-
     liens = [grid[d[0]][d[1]] for d in [(current.relX-1, current.relY),(current.relX,current.relY-1),(current.relX,current.relY+1),(current.relX+1,current.relY)]]
     return [Node(lien, current.relX+lien.X-current.tile.X, current.relY+lien.Y-current.tile.Y) for lien in liens if lien.Content == TileContent.Empty]
 
@@ -33,10 +21,10 @@ def manhattan(point1, point2):
     return abs(point1.X - point2.X) + abs(point1.Y - point2.Y)
 
 def a_star(gamemap, player, target):
+    if abs(target.X-player.Position.X)>8 or abs(target.Y-player.Position.Y)>8:
+        print("Target is too far!")
+        return []
     coin_map = gamemap[0][0]
-    target_rel = Point(0,0)
-    
-
     coords_rel = player.Position.__sub__(coin_map)
     current = Node(gamemap[coords_rel.X][coords_rel.Y], coords_rel.X, coords_rel.Y)
     closedset = set()

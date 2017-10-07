@@ -160,9 +160,13 @@ def bot():
     # return move_to(deserialized_map, player, Point(30,30))
     return decideMove(deserialized_map)
 
+def findEmptySpot(x,y):
+    for i in range(x-1, y+1):
+        for j in range(y-1, y+1):
+            if (Point(i, j) in gameInfo.Empties):
+                return Point(i,j)
 
 def decideMove(deserialized_map):
-
     if player.CarriedRessources < player.CarryingCapacity:
         if gameInfo.nearestResource is None:
             gameInfo.findNearestResource(player.Position)
@@ -171,23 +175,17 @@ def decideMove(deserialized_map):
         distNearestResource = player.Position.MahanttanDistance(gameInfo.nearestResource)
         print("Nearest resource: (", gameInfo.nearestResource.X, gameInfo.nearestResource.Y, ")", distNearestResource)
         if (distNearestResource == 1):
-           return create_collect_action(gameInfo.nearestResource)
+            print "MINING"
+            print str(player.CarriedRessources)
+            return create_collect_action(gameInfo.nearestResource)
         elif (distNearestResource > 1):
-           for i in range(x-1, y+1):
-               for j in range(y-1, y+1):
-                   if (i < player.Position.X + 10) and (
-                       j < player.Position.Y + 10) and (
-                       i > player.Position.X - 10) and (
-                       j > player.Position.Y - 10):
-                       if (Point(i, j) in gameInfo.Empties):
-                           x = i
-                           y = j
-                           break
-
-           return move_to(deserialized_map, player, Point(x, y))
-
+            empty_spot = findEmptySpot(x,y)
+            if empty_spot:
+                return move_to(deserialized_map, player, findEmptySpot(x,y))
+            else:
+                return move_to(deserialized_map, player, gameInfo.HouseLocation)
     else:
-        return move_to(deserialized_map, gameInfo.HouseLocation)
+        return move_to(deserialized_map, player, gameInfo.HouseLocation)
 
 
 @app.route("/", methods=["POST"])
