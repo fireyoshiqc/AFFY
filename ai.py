@@ -6,6 +6,7 @@ import sys
 from pathfinding import a_star
 app = Flask(__name__)
 
+
 gameInfo = GameInfo()
 player = Player()
 
@@ -20,7 +21,10 @@ def display_map(gamemap, joueur):
             elif tile.Content == TileContent.Lava:
                 srow += "L"
             elif tile.Content == TileContent.Player:
-                srow += "P"
+                if Point(tile.X, tile.Y) == player.Position:
+                    srow += "I"
+                else:
+                    srow += "P"
             elif tile.Content == TileContent.Resource:
                 srow += "R"
             elif tile.Content == TileContent.Shop:
@@ -57,6 +61,8 @@ def deserialize_map(serialized_map):
     """
     Fonction utilitaire pour comprendre la map
     """
+    gameInfo.clean()
+
     serialized_map = serialized_map[1:]
     rows = serialized_map.split('[')
     column = rows[0].split('{')
@@ -85,6 +91,8 @@ def deserialize_map(serialized_map):
                 gameInfo.addLava(Point(x, y))
             elif content == 6:
                 gameInfo.addShop(Point(x, y))
+            elif content == 0:
+                gameInfo.addEmpty(Point(x, y));
 
 
     return deserialized_map
@@ -98,7 +106,6 @@ def move_to(gamemap, player, target):
         return create_move_action(Point(next_tile.X, next_tile.Y))
     else:
         return create_move_action(Point(player.Position.X, player.Position.Y))
-
 
 def bot():
     """
@@ -145,10 +152,44 @@ def bot():
 
             # otherPlayers.append({player_name: player_info })
 
-    # return decision
     display_map(deserialized_map, player)
-    return move_to(deserialized_map, player, Point(30,30))
-    
+    # return move_to(deserialized_map, player, Point(30,30))
+    return decideMove(deserialized_map)
+
+
+def decideMove(deserialized_map):
+
+    if player.CarriedRessources < player.CarryingCapacity:
+        if gameInfo.nearestResource is None:
+            gameInfo.findNearestResource(player.Position)
+        x = gameInfo.nearestResource.X
+        y = gameInfo.nearestResource.Y
+        distNearestResource = player.Position.MahanttanDistance(gameInfo.nearestResource)
+        print("Nearest resource: (", gameInfo.nearestResource.X, gameInfo.nearestResource.Y, ")", distNearestResource)
+        if (distNearestResource == 1):
+           return create_collect_action(gameInfo.nearestResource)
+        elif (distNearestResource > 1):
+           for i in range(x-1, y+1):
+               for j in range(y-1, y+1):
+                   if (i < player.Position.X + 10) and (
+                       j < player.Position.Y + 10) and (
+                       i > player.Position.X - 10) and (
+                       j > player.Position.Y - 10):
+                       if (Point(i, j) in gameInfo.Empties):
+                           x = i
+                           y = j
+                           break
+
+
+           return move_to(deserialized_map, player, Point(x, y))
+
+    else:
+        return move_to(deserialized_map, gameInfo.HouseLocation)
+
+
+
+
+
 
 @app.route("/", methods=["POST"])
 def reponse():
@@ -159,4 +200,5 @@ def reponse():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
 

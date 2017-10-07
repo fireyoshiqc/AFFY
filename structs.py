@@ -66,6 +66,7 @@ class GameInfo(object):
         self.Resources = list()
         self.Lava = list()
         self.Wall = list()
+        self.Empties = list()
 
         # nearest
         self.nearestResource = None
@@ -83,28 +84,35 @@ class GameInfo(object):
         if point not in self.Wall:
             self.Wall.append(point)
 
-    def clearLava(self):
+    def clean(self):
         self.Lava = list()
         self.Players = dict()
+        self.Empties = list()
+
 
     def addLava(self, point):
         self.Lava.append(point)
 
+    def addEmpty(self, point):
+        self.Empties.append(point)
+
     def addPlayer(self, position, playerInfo):
         self.Players[position] = playerInfo
 
-    def nearestResource(self, position):
+    def findNearestResource(self, position):
         dist = 40
         for point in self.Resources:
             if position.MahanttanDistance(point) < dist:
                 self.nearestResource = point
+                dist = position.MahanttanDistance(point)
         return self.nearestResource
 
-    def nearestPlayer(self, position):
+    def findNearestPlayer(self, position):
         dist = 40
         for (point, playerInfo) in self.Players:
             if position.MahanttanDistance(point) < dist:
                 self.nearestPlayer = (point, playerInfo)
+                dist = position.MahanttanDistance(point)
 
         return self.nearestPlayer
 
