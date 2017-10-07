@@ -100,14 +100,20 @@ class GameInfo(object):
         self.Players[position] = playerInfo
 
     def findNearestResource(self, position):
+        dist = 20
         for point in self.Resources:
-            if abs(position.X-point.X)<=8 and abs(position.Y-point.Y)<=8:
+            man = point.MahanttanDistance(position)
+            if abs(position.X-point.X)<=8 and abs(position.Y-point.Y)<=8 and man<dist:
+                dist = man
                 self.nearestResource = point
+                
         return self.nearestResource
 
     def findNearestPlayer(self, position):
         for (point, playerInfo) in self.Players:
-            if abs(position.X-point.X)<=8 and abs(position.Y-point.Y)<=8:
+            man = point.MahanttanDistance(position)
+            if abs(position.X-point.X)<=8 and abs(position.Y-point.Y)<=8 and man<dist:
+                dist = man
                 self.nearestPlayer = (point, playerInfo)
         return self.nearestPlayer
 
