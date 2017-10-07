@@ -2,10 +2,31 @@ from flask import Flask, request
 from structs import *
 import json
 import numpy
+import sys
 
 app = Flask(__name__)
 
-gameInfo = GameInfo();
+gameInfo = GameInfo()
+
+def display_map(gamemap):
+    for row in gamemap:
+        srow = ""
+        for tile in row:
+            if tile.Content == TileContent.Empty:
+                srow += "."
+            elif tile.Content == TileContent.House:
+                srow += "H"
+            elif tile.Content == TileContent.Lava:
+                srow += "L"
+            elif tile.Content == TileContent.Player:
+                srow += "P"
+            elif tile.Content == TileContent.Resource:
+                srow += "R"
+            elif tile.Content == TileContent.Shop:
+                srow += "S"
+            elif tile.Content == TileContent.Wall:
+                srow += "W"
+        print srow
 
 def create_action(action_type, target):
     actionContent = ActionContent(action_type, target.__dict__)
@@ -81,19 +102,21 @@ def bot():
 
     # otherPlayers = []
 
-    # for player_dict in map_json["OtherPlayers"]:
-    #     for player_name in player_dict.keys():
-    #         player_info = player_dict[player_name]
-    #         p_pos = player_info["Position"]
-    #         gameInfo.addPlayer(p_pos, float(player_info["Health"])/float(player_info["MaxHealth"]))
-    #         # player_info = PlayerInfo(player_info["Health"],
-    #         #                          player_info["MaxHealth"],
-    #         #                          Point(p_pos["X"], p_pos["Y"]))
-    #
-    #         # otherPlayers.append({player_name: player_info })
+    for player_dict in map_json["OtherPlayers"]:
+        for player_name in player_dict.keys():
+            player_info = player_dict[player_name]
+            if player_info == 'notAPlayer': continue
+            p_pos = player_info["Position"]
+            gameInfo.addPlayer(p_pos, float(player_info["Health"])/float(player_info["MaxHealth"]))
+            # player_info = PlayerInfo(player_info["Health"],
+            #                          player_info["MaxHealth"],
+            #                          Point(p_pos["X"], p_pos["Y"]))
+
+            # otherPlayers.append({player_name: player_info })
 
     # return decision
-    return create_move_action(Point(0,1))
+    display_map(deserialized_map)
+    return create_move_action(player.Position.__add__(Point(1,0)))
 
 @app.route("/", methods=["POST"])
 def reponse():
@@ -104,3 +127,4 @@ def reponse():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+
