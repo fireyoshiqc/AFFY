@@ -71,6 +71,9 @@ def deserialize_map(serialized_map):
             deserialized_map[i][j] = Tile(content, x, y)
 
             # Add info into gameInfo
+            # Empty 0, Resource 1, House 2, Player 3, Wall 4, Lava 5, Shop 6
+            if content == 1:
+                gameInfo.addResource(Re)
 
 
     return deserialized_map
@@ -91,7 +94,7 @@ def bot():
     y = pos["Y"]
     house = p["HouseLocation"]
     player = Player(p["Health"], p["MaxHealth"], Point(x,y),
-                    Point(house["X"], house["Y"]), 0,
+                    Point(house["X"], house["Y"]), 0, int(p["Defence"]), int(p["AttackPower"]),
                     p["CarriedResources"], p["CarryingCapacity"])
 
     # Map
@@ -100,6 +103,7 @@ def bot():
 
     # otherPlayers = []
 
+    # Get info for players
     for player_dict in map_json["OtherPlayers"]:
         for player_name in player_dict.keys():
             player_info = player_dict[player_name]

@@ -34,27 +34,43 @@ class Point(object):
         return "{{{0}, {1}}}".format(self.X, self.Y)
 
     # Distance between two Points
-    def Distance(self, p2):
+    def MahanttanDistance(self, p2):
         delta_x = abs(self.X - p2.X)
         delta_y = abs(self.Y - p2.Y)
         return delta_x + delta_y
+
+    def EulerDistance(self, p2):
+        delta_x = abs(self.X - p2.X)
+        delta_y = abs(self.Y - p2.Y)
+        return math.sqrt(math.pow(delta_x, 2) + math.pow(delta_y, 2))
 
 
 class GameInfo(object):
 
     def __init__(self):
         self.HouseLocation = None
-        self.checkPoints = list()
+        self.Map  = None
         self.Players = dict()
         self.Shop = list()
         self.Resources = list()
         self.Lava = list()
+        self.Wall = list()
+
+        # nearest
+        self.nearestResource = None
+        self.nearestPlayer = None
 
     def addResource(self, point):
-        self.Resources.append(point)
+        if point not in self.Resources:
+            self.Resources.append(point)
 
     def addShop(self, point):
-        self.Shop.append(point)
+        if point not in self.Shop:
+            self.Shop.append(point)
+
+    def addWall(self, point):
+        if point not in self.Wall:
+            self.Wall.append(point)
 
     def clearLava(self):
         self.Lava = list()
@@ -70,20 +86,18 @@ class GameInfo(object):
 
     def nearestResource(self, position):
         dist = 40
-        nearest = None
         for point in self.Resources:
-            if position.Distance(point) < dist:
-                nearest = point
-        return nearest
+            if position.MahanttanDistance(point) < dist:
+                self.nearestResource = point
+        return self.nearestResource
 
     def nearestPlayer(self, position):
         dist = 40
-        nearest = None
         for (point, healthRatio) in self.Players:
-            if position.Distance(point) < dist:
-                nearest = (point, healthRatio)
+            if position.MahanttanDistance(point) < dist:
+                self.nearestPlayer = (point, healthRatio)
 
-        return nearest
+        return self.nearestPlayer
 
 
 class Tile(object):
@@ -96,11 +110,13 @@ class Tile(object):
 
 class Player(object):
 
-    def __init__(self, health, maxHealth, position, houseLocation, score, carriedRessources,
+    def __init__(self, health, maxHealth, position, houseLocation, score, defense, attackPower, carriedRessources,
                  carryingCapacity=1000):
         self.Health = health
         self.MaxHealth = maxHealth
         self.Position = position
+        self.Defense = defense
+        self.AttackPower = attackPower
         self.HouseLocation = houseLocation
         self.Score = score
         self.CarriedRessources = carriedRessources
