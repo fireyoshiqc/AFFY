@@ -128,6 +128,11 @@ class Player(object):
         self.Score = 0
         self.CarriedRessources = 0
         self.CarryingCapacity = 0
+        self.AttackUpgrades = 0
+        self.DefenceUpgrades = 0
+        self.CollectingUpgrades = 0
+        self.CarryingUpgrades = 0
+        self.HealthUpgrades = 0
 
     def Update(self, health, maxHealth, position, score, defense, attackPower, carriedRessources,
                  carryingCapacity=1000):
@@ -139,6 +144,18 @@ class Player(object):
         self.Score = score
         self.CarriedRessources = carriedRessources
         self.CarryingCapacity = carryingCapacity
+    
+    def upgrade(self, upgrade):
+        if upgrade==UpgradeType.MaximumHealth:
+            self.HealthUpgrades += 1
+        if upgrade==UpgradeType.AttackPower:
+            self.AttackUpgrades += 1
+        if upgrade==UpgradeType.Defence:
+            self.DefenceUpgrades += 1
+        if upgrade==UpgradeType.CollectingSpeed:
+            self.CollectingUpgrades += 1
+        if upgrade==UpgradeType.CarryingCapacity:
+            self.CarryingUpgrades += 1
 
 
 class PlayerInfo(object):

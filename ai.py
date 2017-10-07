@@ -52,6 +52,10 @@ def create_heal_action():
 def create_purchase_action(item):
     return create_action("PurchaseAction", item)
 
+def create_upgrade_action(upgrade):
+    return create_action("UpgradeAction", upgrade)
+
+
 
 def deserialize_map(serialized_map):
     """
@@ -147,7 +151,7 @@ def bot():
 
     # return decision
     display_map(deserialized_map, player)
-    return move_to(deserialized_map, player, Point(30,30))
+    return move_to(deserialized_map, player, Point(25,37))
     
 
 @app.route("/", methods=["POST"])

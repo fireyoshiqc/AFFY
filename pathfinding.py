@@ -14,6 +14,18 @@ class Node:
     
 
 def enfants(current, grid):
+    liens = []
+    if current.relX == 0:
+        liens = [grid[d[0]][d[1]] for d in [(current.relX,current.relY-1),(current.relX,current.relY+1),(current.relX+1,current.relY)]]
+    if current.relX == 19:
+        liens = [grid[d[0]][d[1]] for d in [(current.relX-1, current.relY),(current.relX,current.relY-1),(current.relX,current.relY+1)]]
+    if current.relY == 0:
+        liens = [grid[d[0]][d[1]] for d in [(current.relX-1, current.relY),(current.relX,current.relY+1),(current.relX+1,current.relY)]]
+    if current.relY == 19:
+        liens = [grid[d[0]][d[1]] for d in [(current.relX-1, current.relY),(current.relX,current.relY-1),(current.relX+1,current.relY)]]
+    else:
+        liens = [grid[d[0]][d[1]] for d in [(current.relX-1, current.relY),(current.relX,current.relY-1),(current.relX,current.relY+1),(current.relX+1,current.relY)]]
+
     liens = [grid[d[0]][d[1]] for d in [(current.relX-1, current.relY),(current.relX,current.relY-1),(current.relX,current.relY+1),(current.relX+1,current.relY)]]
     return [Node(lien, current.relX+lien.X-current.tile.X, current.relY+lien.Y-current.tile.Y) for lien in liens if lien.Content == TileContent.Empty]
 
