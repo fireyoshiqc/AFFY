@@ -3,13 +3,13 @@ from structs import *
 import json
 import numpy
 import sys
-
+from pathfinding import a_star
 app = Flask(__name__)
 
 gameInfo = GameInfo()
 player = Player()
 
-def display_map(gamemap):
+def display_map(gamemap, joueur):
     for row in gamemap:
         srow = ""
         for tile in row:
@@ -28,6 +28,7 @@ def display_map(gamemap):
             elif tile.Content == TileContent.Wall:
                 srow += "W"
         print srow
+    print "Position du joueur:", str(joueur.Position)
 
 def create_action(action_type, target):
     actionContent = ActionContent(action_type, target.__dict__)
@@ -130,8 +131,9 @@ def bot():
             # otherPlayers.append({player_name: player_info })
 
     # return decision
-    display_map(deserialized_map)
-    return create_move_action(player.Position.__add__(Point(1,0)))
+    display_map(deserialized_map, player)
+
+    return create_move_action(a_star(deserialized_map, player, Point(30,30)))
 
 @app.route("/", methods=["POST"])
 def reponse():
