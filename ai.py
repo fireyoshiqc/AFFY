@@ -136,8 +136,15 @@ def bot():
 
     # return decision
     display_map(deserialized_map, player)
-
-    return create_move_action(a_star(deserialized_map, player, Point(30,30)))
+    path = a_star(deserialized_map, player, Point(25,25))
+    if path:
+        next_tile = path.pop().tile
+        print next_tile.X 
+        print next_tile.Y
+        return create_move_action(Point(next_tile.X, next_tile.Y))
+    else:
+        return create_move_action(Point(player.Position.X, player.Position.Y))
+    
 
 @app.route("/", methods=["POST"])
 def reponse():
