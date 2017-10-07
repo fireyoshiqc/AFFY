@@ -3,12 +3,12 @@ from structs import *
 import json
 import numpy
 import sys
-
+from pathfinding import a_star
 app = Flask(__name__)
 
 gameInfo = GameInfo()
 
-def display_map(gamemap):
+def display_map(gamemap, joueur):
     for row in gamemap:
         srow = ""
         for tile in row:
@@ -27,6 +27,7 @@ def display_map(gamemap):
             elif tile.Content == TileContent.Wall:
                 srow += "W"
         print srow
+    print "Position du joueur:", str(joueur.Position)
 
 def create_action(action_type, target):
     actionContent = ActionContent(action_type, target.__dict__)
@@ -72,8 +73,8 @@ def deserialize_map(serialized_map):
 
             # Add info into gameInfo
             # Empty 0, Resource 1, House 2, Player 3, Wall 4, Lava 5, Shop 6
-            if content == 1:
-                gameInfo.addResource(Re)
+          #  if content == 1:
+               # gameInfo.addResource(Re)
 
 
     return deserialized_map
@@ -109,7 +110,7 @@ def bot():
             player_info = player_dict[player_name]
             if player_info == 'notAPlayer': continue
             p_pos = player_info["Position"]
-            gameInfo.addPlayer(p_pos, float(player_info["Health"])/float(player_info["MaxHealth"]))
+           # gameInfo.addPlayer(p_pos, float(player_info["Health"])/float(player_info["MaxHealth"]))
             # player_info = PlayerInfo(player_info["Health"],
             #                          player_info["MaxHealth"],
             #                          Point(p_pos["X"], p_pos["Y"]))
@@ -117,8 +118,9 @@ def bot():
             # otherPlayers.append({player_name: player_info })
 
     # return decision
-    display_map(deserialized_map)
-    return create_move_action(player.Position.__add__(Point(1,0)))
+    display_map(deserialized_map, player)
+
+    return create_move_action(a_star(deserialized_map, player, Point(30,30)))
 
 @app.route("/", methods=["POST"])
 def reponse():

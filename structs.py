@@ -81,8 +81,8 @@ class GameInfo(object):
     def addLava(self, point):
         self.Lava.append(point)
 
-    def addPlayer(self, position, healthRatio):
-        self.Players[position] = healthRatio
+  #  def addPlayer(self, position, healthRatio):
+        #self.Players[position] = healthRatio
 
     def nearestResource(self, position):
         dist = 40
