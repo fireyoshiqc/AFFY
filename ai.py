@@ -73,6 +73,9 @@ def deserialize_map(serialized_map):
             deserialized_map[i][j] = Tile(content, x, y)
 
             # Add info into gameInfo
+            # Get rid off empty resources
+            if Point(x, y) in gameInfo.Resources & content != 1:
+                gameInfo.Resources.remove(Point(x, y))
             # Empty 0, Resource 1, House 2, Player 3, Wall 4, Lava 5, Shop 6
             if content == 1:
                 gameInfo.addResource(Point(x, y))
@@ -82,6 +85,7 @@ def deserialize_map(serialized_map):
                 gameInfo.addLava(Point(x, y))
             elif content == 6:
                 gameInfo.addShop(Point(x, y))
+
 
     return deserialized_map
 
