@@ -50,8 +50,6 @@ def create_heal_action():
 def create_purchase_action(item):
     return create_action("PurchaseAction", item)
 
-def parcours_map(serialized_map):
-
 
 def deserialize_map(serialized_map):
     """
