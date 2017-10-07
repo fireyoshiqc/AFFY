@@ -185,12 +185,14 @@ def decideMove(deserialized_map):
             return create_collect_action(gameInfo.nearestResource)
         elif (distNearestResource > 1):
             empty_spot = findEmptySpot(x,y)
+            print (empty_spot)
             if empty_spot:
                 return move_to(deserialized_map, player, findEmptySpot(x,y))
             else:
                 return move_to(deserialized_map, player, gameInfo.HouseLocation)
     else:
         return move_to(deserialized_map, player, gameInfo.HouseLocation)
+
 
 
 @app.route("/", methods=["POST"])
