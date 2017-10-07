@@ -161,10 +161,16 @@ def bot():
     return decideMove(deserialized_map)
 
 def findEmptySpot(x,y):
+    dist = 20
+    ret = None
     for i in range(x-1, y+1):
         for j in range(y-1, y+1):
-            if (Point(i, j) in gameInfo.Empties):
-                return Point(i,j)
+            point = Point(i,j)
+            man = point.MahanttanDistance(player.Position)
+            if (point in gameInfo.Empties and man < dist):
+                dist = man
+                ret = point
+    return ret
 
 def decideMove(deserialized_map):
     if player.CarriedRessources < player.CarryingCapacity:

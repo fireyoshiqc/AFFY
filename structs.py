@@ -136,7 +136,7 @@ class Player(object):
         self.AttackPower = 0
         self.Score = 0
         self.CarriedRessources = 0
-        self.CarryingCapacity = 0
+        self.CarryingCapacity = 1000
         self.AttackUpgrades = 0
         self.DefenceUpgrades = 0
         self.CollectingUpgrades = 0
