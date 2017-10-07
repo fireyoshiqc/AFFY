@@ -7,6 +7,7 @@ from pathfinding import a_star
 app = Flask(__name__)
 
 gameInfo = GameInfo()
+player = Player()
 
 def display_map(gamemap, joueur):
     for row in gamemap:
@@ -73,9 +74,14 @@ def deserialize_map(serialized_map):
 
             # Add info into gameInfo
             # Empty 0, Resource 1, House 2, Player 3, Wall 4, Lava 5, Shop 6
-          #  if content == 1:
-               # gameInfo.addResource(Re)
-
+            if content == 1:
+                gameInfo.addResource(Point(x, y))
+            elif content == 4:
+                gameInfo.addWall(Point(x, y))
+            elif content == 5:
+                gameInfo.addLava(Point(x, y))
+            elif content == 6:
+                gameInfo.addShop(Point(x, y))
 
     return deserialized_map
 
@@ -86,16 +92,18 @@ def bot():
     map_json = request.form["map"]
 
     # Player info
-
     encoded_map = map_json.encode()
     map_json = json.loads(encoded_map)
     p = map_json["Player"]
     pos = p["Position"]
     x = pos["X"]
     y = pos["Y"]
+    score = p["Score"]
     house = p["HouseLocation"]
-    player = Player(p["Health"], p["MaxHealth"], Point(x,y),
-                    Point(house["X"], house["Y"]), 0, int(p["Defence"]), int(p["AttackPower"]),
+    gameInfo.HouseLocation = Point(house["X"], house["Y"])
+
+    player.Update(p["Health"], p["MaxHealth"], Point(x,y),
+                    score, int(p["Defence"]), int(p["AttackPower"]),
                     p["CarriedResources"], p["CarryingCapacity"])
 
     # Map
@@ -110,7 +118,7 @@ def bot():
             player_info = player_dict[player_name]
             if player_info == 'notAPlayer': continue
             p_pos = player_info["Position"]
-           # gameInfo.addPlayer(p_pos, float(player_info["Health"])/float(player_info["MaxHealth"]))
+            gameInfo.addPlayer(Point(p_pos["X"], p_pos["Y"]), float(player_info["Health"])/float(player_info["MaxHealth"]))
             # player_info = PlayerInfo(player_info["Health"],
             #                          player_info["MaxHealth"],
             #                          Point(p_pos["X"], p_pos["Y"]))

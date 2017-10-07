@@ -33,6 +33,17 @@ class Point(object):
     def __str__(self):
         return "{{{0}, {1}}}".format(self.X, self.Y)
 
+    def __hash__(self):
+        return hash((self.X, self.Y))
+
+    def __eq__(self, other):
+        return (self.X, self.Y) == (other.X, other.Y)
+
+    def __ne__(self, other):
+        # Not strictly necessary, but to avoid having both x==y and x!=y
+        # True at the same time
+        return not (self == other)
+
     # Distance between two Points
     def MahanttanDistance(self, p2):
         delta_x = abs(self.X - p2.X)
@@ -81,8 +92,8 @@ class GameInfo(object):
     def addLava(self, point):
         self.Lava.append(point)
 
-  #  def addPlayer(self, position, healthRatio):
-        #self.Players[position] = healthRatio
+    def addPlayer(self, position, healthRatio):
+        self.Players[position] = healthRatio
 
     def nearestResource(self, position):
         dist = 40
@@ -110,14 +121,23 @@ class Tile(object):
 
 class Player(object):
 
-    def __init__(self, health, maxHealth, position, houseLocation, score, defense, attackPower, carriedRessources,
+    def __init__(self):
+        self.Health = 0
+        self.MaxHealth = 0
+        self.Position = 0
+        self.Defense = 0
+        self.AttackPower = 0
+        self.Score = 0
+        self.CarriedRessources = 0
+        self.CarryingCapacity = 0
+
+    def Update(self, health, maxHealth, position, score, defense, attackPower, carriedRessources,
                  carryingCapacity=1000):
         self.Health = health
         self.MaxHealth = maxHealth
         self.Position = position
         self.Defense = defense
         self.AttackPower = attackPower
-        self.HouseLocation = houseLocation
         self.Score = score
         self.CarriedRessources = carriedRessources
         self.CarryingCapacity = carryingCapacity
