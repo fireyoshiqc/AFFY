@@ -1,5 +1,6 @@
 from structs import *
 from ai import *
+import math
 
 def findClosestPlayer(Player, otherPlayers):
     closest = otherPlayers[0]
@@ -14,21 +15,25 @@ def findClosestPlayer(Player, otherPlayers):
 def evaluateClosestPlayer(Player, otherPlayers):
     closest = findClosestPlayer(Player, otherPlayers)
     capacityRatio = Player.CarriedRessources / Player.CarryingCapacity
-    damage = math.floor(3 + closest.AttackPower - 2 * math.pow((Player.Defense), 0,6))
-    getOneShot = Player.Health - damage
+    ennemyDamage = math.floor(3 + closest.AttackPower - 2 * math.pow((Player.Defense), 0,6))
+    getOneShot = Player.Health - ennemyDamage
+
+    playerDamage = math.floor(3 + Player.AttackPower - 2 * math.pow((closest.Defense), 0,6))
+    playerOneShot = closest.Health - playerDamage
 
     #Ignore the player
-    if playerDistance(Player, closest) > 5:
+    if playerDistance(Player, closest) > 3:
         return 0
     #Flee the player
     if capacityRatio > 0.75 or getOneShot:
         return -10000
 
     #Attack the player
-    if(Player.AttackPower)
+    if playerOneShot:
+        return 1000
 
 def playerDistance(Player, PlayerInfo):
-    distanceX = math.fabs(Player.Position.X - PlayerInfo.Position.X)
-    distanceY = math.fabs(Player.Position.Y - PlayerInfo.Position.Y)
+    distanceX = abs(Player.Position.X - PlayerInfo.Position.X)
+    distanceY = abs(Player.Position.Y - PlayerInfo.Position.Y)
 
     return distanceX + distanceY
