@@ -1,0 +1,4 @@
+# Ignorer les fichiers compilés Python .pyc
+*.pyc
+# Ignorer la configuration VSCode
+.vscode
