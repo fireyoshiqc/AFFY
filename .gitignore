@@ -2,3 +2,5 @@
 *.pyc
 # Ignorer la configuration VSCode
 .vscode
+# Ignorer la configuration PyCharm
+.idea
