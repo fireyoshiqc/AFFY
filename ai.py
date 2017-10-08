@@ -208,12 +208,6 @@ def findEmptySpot(x,y):
     return ret
 
 def decideMove(deserialized_map):
-<<<<<<< HEAD
-    gameInfo.findNearestResource(player.Position)
-
-    if gameInfo.nearestResource is None:
-        return move_to(deserialized_map, player, Point(player.Position.X - 1, player.Position.Y -1))
-=======
     if player.CarriedRessources < player.CarryingCapacity:
         gameInfo.findNearestResource(player.Position)
         if gameInfo.nearestResource is None:
@@ -234,7 +228,6 @@ def decideMove(deserialized_map):
                 return move_to(deserialized_map, player, findEmptySpot(x,y))
             else:
                 return move_to(deserialized_map, player, gameInfo.HouseLocation)
->>>>>>> nightly
     else:
         if player.CarriedRessources < player.CarryingCapacity:
             x = gameInfo.nearestResource.X
