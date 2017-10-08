@@ -72,6 +72,7 @@ class GameInfo(object):
         # nearest
         self.nearestResource = None
         self.nearestPlayer = None
+        self.nearestWall = None
 
     def addResource(self, point):
         if point not in self.Resources:
@@ -109,6 +110,16 @@ class GameInfo(object):
                 self.nearestResource = point
                 
         return self.nearestResource
+
+    def findNearestWall(self, position):
+        dist = 20
+        for point in self.Wall:
+            man = point.MahanttanDistance(position)
+            if abs(position.X-point.X)<=8 and abs(position.Y-point.Y)<=8 and man<dist:
+                dist = man
+                self.nearestWall = point
+                
+        return self.nearestWall
 
     def findNearestPlayer(self, position):
         for (point, playerInfo) in self.Players:
