@@ -143,6 +143,7 @@ class Player(object):
         self.CollectingUpgrades = 0
         self.CarryingUpgrades = 0
         self.HealthUpgrades = 0
+        self.currentHouseRessources = 0
 
     def Update(self, health, maxHealth, position, score, defense, attackPower, carriedRessources,
                  carryingCapacity=1000):

@@ -4,6 +4,7 @@ import json
 import numpy
 import sys
 from pathfinding import a_star
+from miningCapacity import *
 app = Flask(__name__)
 
 
@@ -59,7 +60,29 @@ def create_purchase_action(item):
 def create_upgrade_action(upgrade):
     return create_action("UpgradeAction", upgrade)
 
+def check_mining_upgrades():
+    currentSpeedUpgrade = player.CollectingUpgrades
+    currentCarryingUpgrade = player.CarryingUpgrades
+    upgrade = nextUpgrade(10, currentSpeedUpgrade, currentCarryingUpgrade)
+    if upgrade is "max":
+        return 0
+    elif upgrade is "capacity":
+        cost = upgradeCost(player.CarryingUpgrades)
+    else:
+        cost = upgradeCost(player.CollectingUpgrades)
+    cash = player.currentHouseRessources
+    if(cash >= cost and upgrade is "capacity"):
+        return 1
+    elif(cash >= cost and upgrade is "speed"):
+        return 2
+    else:
+        return 0
 
+def checkHouse():
+    if player.Position == gameInfo.HouseLocation:
+        return True
+    else:
+        return False
 
 def deserialize_map(serialized_map):
     """
@@ -114,6 +137,17 @@ def bot():
     """
     Main de votre bot.
     """
+    print("Speed: " + str(player.CollectingUpgrades))
+    print("Capacity: " + str(player.CarryingUpgrades))
+    print("Total cash: " + str(player.currentHouseRessources))
+
+    if checkHouse():
+        buyMining = check_mining_upgrades()
+        if(buyMining == 1):
+            return create_upgrade_action("CarryingCapacity")
+        elif(buyMining == 2):
+            return create_upgrade_action("CollectingSpeed")
+
     map_json = request.form["map"]
 
     # Player info
@@ -182,6 +216,7 @@ def decideMove(deserialized_map):
         if (distNearestResource == 1):
             print "MINING"
             print str(player.CarriedRessources)
+            player.currentHouseRessources += returnSpeed(player.CollectingUpgrades)*100
             return create_collect_action(gameInfo.nearestResource)
         elif (distNearestResource > 1):
             empty_spot = findEmptySpot(x,y)
