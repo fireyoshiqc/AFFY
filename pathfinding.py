@@ -21,9 +21,9 @@ def manhattan(point1, point2):
     return abs(point1.X - point2.X) + abs(point1.Y - point2.Y)
 
 def a_star(gamemap, player, target):
-    if abs(target.X-player.Position.X)>8 or abs(target.Y-player.Position.Y)>8:
-        print("Target is too far!")
-        return []
+    while abs(target.X-player.Position.X)>8 or abs(target.Y-player.Position.Y)>8:
+        target.X = (target.X - player.Position.X)/2 + player.Position.X
+        target.Y = (target.Y - player.Position.Y)/2 + player.Position.Y
     coin_map = gamemap[0][0]
     coords_rel = player.Position.__sub__(coin_map)
     current = Node(gamemap[coords_rel.X][coords_rel.Y], coords_rel.X, coords_rel.Y)
@@ -33,6 +33,8 @@ def a_star(gamemap, player, target):
     openset.add(current)
     
     while(openset):
+        if len(openset) > 400:
+            break
         current = min(openset, key=lambda o:o.G + o.H)
         if current.tile.X == target.X and current.tile.Y == target.Y: #Quand le but est trouve, on depile les cases trouvees
             path = []

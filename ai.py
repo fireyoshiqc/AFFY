@@ -162,7 +162,7 @@ def bot():
 def findEmptySpot(x,y):
     dist = 20
     ret = None
-    for i in range(x-1, y+1):
+    for i in range(x-1, x+1):
         for j in range(y-1, y+1):
             point = Point(i,j)
             man = point.MahanttanDistance(player.Position)
@@ -173,8 +173,9 @@ def findEmptySpot(x,y):
 
 def decideMove(deserialized_map):
     if player.CarriedRessources < player.CarryingCapacity:
+        gameInfo.findNearestResource(player.Position)
         if gameInfo.nearestResource is None:
-            gameInfo.findNearestResource(player.Position)
+            return move_to(deserialized_map, player, gameInfo.HouseLocation)
         x = gameInfo.nearestResource.X
         y = gameInfo.nearestResource.Y
         distNearestResource = player.Position.MahanttanDistance(gameInfo.nearestResource)
