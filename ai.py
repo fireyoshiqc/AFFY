@@ -72,8 +72,10 @@ def check_mining_upgrades():
         cost = upgradeCost(player.CollectingUpgrades)
     cash = player.currentHouseRessources
     if(cash >= cost and upgrade is "capacity"):
+        player.currentHouseRessources = 0
         return 1
     elif(cash >= cost and upgrade is "speed"):
+        player.currentHouseRessources = 0
         return 2
     else:
         return 0
