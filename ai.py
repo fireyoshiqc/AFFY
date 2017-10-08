@@ -208,26 +208,10 @@ def findEmptySpot(x,y):
     return ret
 
 def decideMove(deserialized_map):
-    if player.CarriedRessources < player.CarryingCapacity:
-        gameInfo.findNearestResource(player.Position)
-        if gameInfo.nearestResource is None:
-            return move_to(deserialized_map, player, gameInfo.HouseLocation)
-        x = gameInfo.nearestResource.X
-        y = gameInfo.nearestResource.Y
-        distNearestResource = player.Position.MahanttanDistance(gameInfo.nearestResource)
-        print("Nearest resource: (", gameInfo.nearestResource.X, gameInfo.nearestResource.Y, ")", distNearestResource)
-        if (distNearestResource == 1):
-            print "MINING"
-            print str(player.CarriedRessources)
-            player.currentHouseRessources += returnSpeed(player.CollectingUpgrades)*100
-            return create_collect_action(gameInfo.nearestResource)
-        elif (distNearestResource > 1):
-            empty_spot = findEmptySpot(x,y)
-            print (empty_spot)
-            if empty_spot:
-                return move_to(deserialized_map, player, findEmptySpot(x,y))
-            else:
-                return move_to(deserialized_map, player, gameInfo.HouseLocation)
+    gameInfo.findNearestResource(player.Position)
+    if gameInfo.nearestResource is None:
+        return move_to(deserialized_map, player, Point(player.Position.X, player.Position.Y - 1))
+        
     else:
         if player.CarriedRessources < player.CarryingCapacity:
             x = gameInfo.nearestResource.X
