@@ -4,6 +4,7 @@ import json
 import numpy
 import sys
 from pathfinding import a_star
+from miningCapacity import *
 app = Flask(__name__)
 
 
@@ -59,7 +60,29 @@ def create_purchase_action(item):
 def create_upgrade_action(upgrade):
     return create_action("UpgradeAction", upgrade)
 
+def check_mining_upgrades():
+    currentSpeedUpgrade = player.CollectingUpgrades
+    currentCarryingUpgrade = player.CarryingUpgrades
+    upgrade = nextUpgrade(10, currentSpeedUpgrade, currentCarryingUpgrade)
+    if upgrade is "max":
+        return 0
+    elif upgrade is "capacity":
+        cost = upgradeCost(player.CarryingUpgrades)
+    else:
+        cost = upgradeCost(player.CollectingUpgrades)
+    cash = player.currentHouseRessources
+    if(cash >= cost and upgrade is "capacity"):
+        return 1
+    elif(cash >= cost and upgrade is "speed"):
+        return 2
+    else:
+        return 0
 
+def checkHouse():
+    if player.Position == gameInfo.HouseLocation:
+        return True
+    else:
+        return False
 
 def deserialize_map(serialized_map):
     """
@@ -114,6 +137,17 @@ def bot():
     """
     Main de votre bot.
     """
+    print("Speed: " + str(player.CollectingUpgrades))
+    print("Capacity: " + str(player.CarryingUpgrades))
+    print("Total cash: " + str(player.currentHouseRessources))
+
+    if checkHouse():
+        buyMining = check_mining_upgrades()
+        if(buyMining == 1):
+            return create_upgrade_action("CarryingCapacity")
+        elif(buyMining == 2):
+            return create_upgrade_action("CollectingSpeed")
+
     map_json = request.form["map"]
 
     # Player info
@@ -162,7 +196,7 @@ def bot():
 def findEmptySpot(x,y):
     dist = 20
     ret = None
-    for i in range(x-1, y+1):
+    for i in range(x-1, x+1):
         for j in range(y-1, y+1):
             point = Point(i,j)
             man = point.MahanttanDistance(player.Position)
@@ -172,10 +206,33 @@ def findEmptySpot(x,y):
     return ret
 
 def decideMove(deserialized_map):
+<<<<<<< HEAD
     gameInfo.findNearestResource(player.Position)
 
     if gameInfo.nearestResource is None:
         return move_to(deserialized_map, player, Point(player.Position.X - 1, player.Position.Y -1))
+=======
+    if player.CarriedRessources < player.CarryingCapacity:
+        gameInfo.findNearestResource(player.Position)
+        if gameInfo.nearestResource is None:
+            return move_to(deserialized_map, player, gameInfo.HouseLocation)
+        x = gameInfo.nearestResource.X
+        y = gameInfo.nearestResource.Y
+        distNearestResource = player.Position.MahanttanDistance(gameInfo.nearestResource)
+        print("Nearest resource: (", gameInfo.nearestResource.X, gameInfo.nearestResource.Y, ")", distNearestResource)
+        if (distNearestResource == 1):
+            print "MINING"
+            print str(player.CarriedRessources)
+            player.currentHouseRessources += returnSpeed(player.CollectingUpgrades)*100
+            return create_collect_action(gameInfo.nearestResource)
+        elif (distNearestResource > 1):
+            empty_spot = findEmptySpot(x,y)
+            print (empty_spot)
+            if empty_spot:
+                return move_to(deserialized_map, player, findEmptySpot(x,y))
+            else:
+                return move_to(deserialized_map, player, gameInfo.HouseLocation)
+>>>>>>> nightly
     else:
         if player.CarriedRessources < player.CarryingCapacity:
             x = gameInfo.nearestResource.X
