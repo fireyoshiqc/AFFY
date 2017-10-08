@@ -221,6 +221,7 @@ def decideMove(deserialized_map):
             if (distNearestResource == 1):
                 print "MINING"
                 print str(player.CarriedRessources)
+                player.currentHouseRessources += 100*returnSpeed(player.CollectingUpgrades)
                 return create_collect_action(gameInfo.nearestResource)
             elif (distNearestResource > 1):
                 empty_spot = findEmptySpot(x,y)
